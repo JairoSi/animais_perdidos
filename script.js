@@ -16,18 +16,19 @@ async function testarConexao() {
     }
 }
 
+// ✅ Garantir que o botão do doguinho funciona corretamente
 document.addEventListener("DOMContentLoaded", () => {
     testarConexao();
     carregarAnimais();
 
-    // ✅ Garantir que o botão do doguinho funcione corretamente
+    // 🔹 Seletor do botão e do formulário
     const botaoCadastrar = document.getElementById("btn-cadastrar");
     const formularioCadastro = document.getElementById("cadastroForm");
 
     if (botaoCadastrar && formularioCadastro) {
         botaoCadastrar.addEventListener("click", () => {
-            console.log("🐶 Botão de cadastro clicado!"); // Log para ver se está funcionando
-            formularioCadastro.classList.toggle("oculto"); // Alterna entre mostrar/ocultar
+            console.log("🐶 Botão do doguinho clicado!");
+            formularioCadastro.classList.toggle("oculto"); // Mostra/oculta o formulário
         });
     } else {
         console.error("❌ Erro: Elementos do formulário não encontrados.");
