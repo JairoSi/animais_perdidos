@@ -1,4 +1,4 @@
-/* Resetando alguns estilos padrões */
+/* Resetando estilos */
 * {
     margin: 0;
     padding: 0;
@@ -8,36 +8,74 @@
 
 /* Estilizando o corpo da página */
 body {
-    background-color: #f8f9fa;
+    background-color: #f4f4f4;
     color: #333;
     text-align: center;
     padding: 20px;
 }
 
-/* Criando um cabeçalho bonito */
-h1 {
-    color: #ff5733;
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-}
-
-/* Estilizando o parágrafo */
-p {
-    font-size: 1.2rem;
+/* Estilizando o cabeçalho */
+header {
+    background-color: #ff5733;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
     margin-bottom: 20px;
 }
 
-/* Criando um container para centralizar os conteúdos */
-.container {
+header h1 {
+    font-size: 2.5rem;
+}
+
+header p {
+    font-size: 1.2rem;
+}
+
+/* Seção de sobre */
+.sobre {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     max-width: 600px;
-    margin: auto;
+    margin: 20px auto;
 }
 
-/* Botão de ação */
+/* Seção de animais perdidos */
+.animais {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.animais .card {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    margin: 10px;
+    width: 200px;
+}
+
+.animais img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* Seção de cadastro */
+.cadastro {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
 .btn {
     display: inline-block;
     padding: 10px 20px;
@@ -51,4 +89,13 @@ p {
 
 .btn:hover {
     background-color: #e74c3c;
+}
+
+/* Rodapé */
+footer {
+    margin-top: 20px;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
 }
