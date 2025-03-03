@@ -58,5 +58,61 @@ async function marcarEncontrado(id) {
     }
 }
 
+// Função para fazer upload de imagem para o Supabase Storage
+async function uploadImagem(file) {
+    const fileName = `${Date.now()}_${file.name}`; // Nome único para evitar sobrescritas
+    const { data, error } = await supabase.storage.from('animais_perdidos').upload(`public/${fileName}`, file, {
+        cacheControl: '3600',
+        upsert: false
+    });
+
+    if (error) {
+        console.error("Erro ao fazer upload da imagem:", error);
+        alert("Erro ao enviar a imagem.");
+        return null;
+    }
+
+    return `${SUPABASE_URL}/storage/v1/object/public/animais_perdidos/public/${fileName}`;
+}
+
+// Função para cadastrar um animal no banco de dados
+async function enviarParaSupabase(event) {
+    event.preventDefault();
+
+    let nome = document.querySelector("#nome").value.trim();
+    let local = document.querySelector("#local").value.trim();
+    let contato = document.querySelector("#contato").value.trim();
+    let imagemInput = document.querySelector("#imagem").files[0];
+
+    // Verificar se os campos estão preenchidos corretamente
+    if (!nome || !local || !contato) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return;
+    }
+
+    let imagem = "https://via.placeholder.com/200"; // Imagem padrão caso não seja enviada
+
+    if (imagemInput) {
+        imagem = await uploadImagem(imagemInput);
+        if (!imagem) {
+            alert("Erro ao enviar a imagem. Tente novamente.");
+            return;
+        }
+    }
+
+    let { data, error } = await supabase.from('animais_perdidos').insert([
+        { nome: nome, local: local, contato: contato, imagem_url: imagem }
+    ]);
+
+    if (error) {
+        alert("Erro ao cadastrar.");
+    } else {
+        alert("Animal cadastrado com sucesso!");
+        document.querySelector("#formAnimal").reset();
+        carregarAnimais();
+    }
+}
+
 // Adiciona eventos ao carregar a página
+document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
 document.addEventListener("DOMContentLoaded", carregarAnimais);
