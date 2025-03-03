@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animais Perdidos</title>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header>
@@ -13,32 +14,41 @@
     </header>
 
     <main>
+        <!-- Seção Sobre -->
         <section class="sobre">
             <h2>Sobre o Site</h2>
-            <p>Nosso objetivo é reunir informações sobre animais desaparecidos e ajudar seus donos a encontrá-los. Se você viu algum animal perdido, cadastre aqui!</p>
+            <p>Nosso objetivo é reunir informações sobre animais desaparecidos e ajudar seus donos a encontrá-los. 
+               Se você viu algum animal perdido, cadastre aqui!</p>
         </section>
 
-        <section class="animais">
-            <h2>Animais Perdidos</h2>
-            <div class="card">
-                <img src="https://via.placeholder.com/200" alt="Foto do animal">
-                <h3>Nome: Max</h3>
-                <p>Local: Centro de Campina Grande</p>
-                <p>Contato: (83) 99999-9999</p>
-            </div>
-
-            <div class="card">
-                <img src="https://via.placeholder.com/200" alt="Foto do animal">
-                <h3>Nome: Luna</h3>
-                <p>Local: Bairro Catolé</p>
-                <p>Contato: (83) 98888-8888</p>
-            </div>
-        </section>
-
+        <!-- Seção de Cadastro -->
         <section class="cadastro">
             <h2>Cadastrar um Animal Perdido</h2>
             <p>Se você viu ou perdeu um animal, preencha o formulário abaixo.</p>
-            <a href="#" class="btn">Cadastrar Animal</a>
+
+            <form id="formAnimal">
+                <label for="nome">Nome do Animal:</label>
+                <input type="text" id="nome" name="nome" required>
+
+                <label for="local">Local Perdido:</label>
+                <input type="text" id="local" name="local" required>
+
+                <label for="contato">Contato:</label>
+                <input type="text" id="contato" name="contato" required>
+
+                <label for="imagem">Imagem (URL opcional):</label>
+                <input type="text" id="imagem" name="imagem">
+
+                <button type="submit">Cadastrar</button>
+            </form>
+        </section>
+
+        <!-- Seção de Animais Cadastrados -->
+        <section class="animais">
+            <h2>Animais Perdidos</h2>
+            <div id="listaAnimais">
+                <!-- Os animais cadastrados no Supabase aparecerão aqui -->
+            </div>
         </section>
     </main>
 
