@@ -9,23 +9,14 @@
 </head>
 <body>
     <header>
-        <h1>Animais Perdidos 🐾</h1>
+        Animais Perdidos 🐾
         <p>Ajude a encontrar animais desaparecidos</p>
     </header>
 
     <main>
-        <!-- Seção Sobre -->
-        <section class="sobre">
-            <h2>Sobre o Site</h2>
-            <p>Nosso objetivo é reunir informações sobre animais desaparecidos e ajudar seus donos a encontrá-los. 
-               Se você viu algum animal perdido, cadastre aqui!</p>
-        </section>
-
         <!-- Seção de Cadastro -->
         <section class="cadastro">
             <h2>Cadastrar um Animal Perdido</h2>
-            <p>Se você viu ou perdeu um animal, preencha o formulário abaixo.</p>
-
             <form id="formAnimal">
                 <label for="nome">Nome do Animal:</label>
                 <input type="text" id="nome" name="nome" required>
@@ -36,10 +27,10 @@
                 <label for="contato">Contato:</label>
                 <input type="text" id="contato" name="contato" required>
 
-                <label for="imagem">Imagem (URL opcional):</label>
-                <input type="text" id="imagem" name="imagem">
+                <label for="imagem">Foto do Animal:</label>
+                <input type="file" id="imagem" name="imagem" accept="image/*">
 
-                <button type="submit" class="btn">Cadastrar</button>
+                <button type="submit">Cadastrar</button>
             </form>
         </section>
 
@@ -47,13 +38,13 @@
         <section class="animais">
             <h2>Animais Perdidos</h2>
             <div id="listaAnimais">
-                <!-- Os animais cadastrados no Supabase aparecerão aqui -->
+                <!-- Os animais cadastrados aparecerão aqui -->
             </div>
         </section>
     </main>
 
     <footer>
-        <p>© 2024 Animais Perdidos | Feito para ajudar nossos amigos peludos!</p>
+        © 2024 Animais Perdidos | Feito para ajudar nossos amigos peludos! 🐾
     </footer>
 </body>
 </html>
