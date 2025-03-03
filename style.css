@@ -1,115 +1,137 @@
-/* Resetando estilos */
-* {
+/* Importando uma fonte moderna */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* Estilização Geral */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
-}
-
-/* Estilizando o corpo da página */
-body {
-    background-color: #f8f9fa; /* Fundo cinza claro */
-    color: #333;
     text-align: center;
-    padding: 20px;
 }
 
-/* Estilizando o cabeçalho */
 header {
-    background-color: #0066cc; /* Azul escuro vibrante */
+    background-color: #4CAF50;
     color: white;
     padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+main {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
     border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Formulário de Cadastro */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     margin-bottom: 20px;
 }
 
-header h1 {
-    font-size: 2.5rem;
+label {
+    font-weight: bold;
+    text-align: left;
+    margin-left: 5px;
 }
 
-header p {
-    font-size: 1.2rem;
-}
-
-/* Seção de sobre */
-.sobre {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    margin: 20px auto;
-}
-
-/* Seção de animais perdidos */
-.animais {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 800px;
-    margin: 20px auto;
-}
-
-.animais h2 {
-    color: #0066cc;
-}
-
-.animais .card {
-    background-color: #fff;
+input {
     padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    display: inline-block;
-    margin: 10px;
-    width: 220px;
-    transition: transform 0.3s;
-}
-
-.animais .card:hover {
-    transform: scale(1.05);
-}
-
-.animais img {
-    width: 100%;
-    border-radius: 10px;
-}
-
-/* Seção de cadastro */
-.cadastro {
-    background-color: #ffcc00; /* Amarelo vibrante */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    margin: 20px auto;
-}
-
-.cadastro h2 {
-    color: #333;
-}
-
-/* Botões */
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #0066cc;
-    color: white;
-    text-decoration: none;
-    font-size: 1.2rem;
+    border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
     transition: 0.3s;
 }
 
-.btn:hover {
-    background-color: #004b99;
+button:hover {
+    background-color: #388E3C;
+}
+
+/* Estilização dos Cards de Animais */
+#listaAnimais {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    width: 250px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.card h3 {
+    margin: 10px 0 5px;
+    font-size: 18px;
+}
+
+.card p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0;
+}
+
+/* Botões dentro dos cards */
+.card button {
+    margin-top: 10px;
+    width: 100%;
+    font-size: 16px;
+}
+
+.encontrado {
+    background-color: #FF9800;
+}
+
+.encontrado:hover {
+    background-color: #F57C00;
+}
+
+.remover {
+    background-color: #D32F2F;
+}
+
+.remover:hover {
+    background-color: #B71C1C;
 }
 
 /* Rodapé */
 footer {
-    margin-top: 20px;
-    background-color: #333;
+    background-color: #4CAF50;
     color: white;
     padding: 10px;
-    border-radius: 10px;
+    margin-top: 20px;
+    font-size: 14px;
 }
