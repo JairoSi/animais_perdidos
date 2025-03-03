@@ -2,13 +2,22 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
 // Conectar ao Supabase
 const SUPABASE_URL = 'https://itzfzcnpesebessjigkh.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0emZ6Y25wZXNlYmVzc2ppZ2toIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEwMTk4MjQsImV4cCI6MjA1NjU5NTgyNH0.MO7A54uxXHKcwCvEmsunTofle7EHQ0Ln25vAH2i9vIc';
+const SUPABASE_KEY = 'SUA_ANON_PUBLIC_KEY';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Mostrar/Esconder Formulário
-document.getElementById("btn-cadastrar").addEventListener("click", () => {
-    document.getElementById("cadastroForm").classList.toggle("oculto");
+document.addEventListener("DOMContentLoaded", () => {
+    const botaoCadastrar = document.getElementById("btn-cadastrar");
+    const formularioCadastro = document.getElementById("cadastroForm");
+
+    if (botaoCadastrar && formularioCadastro) {
+        botaoCadastrar.addEventListener("click", () => {
+            formularioCadastro.classList.toggle("oculto"); // Alterna entre mostrar/ocultar
+        });
+    } else {
+        console.error("❌ Erro: Elementos do formulário não encontrados.");
+    }
 });
 
 // Carregar Animais
