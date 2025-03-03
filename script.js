@@ -1,8 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
-// Conectar ao Supabase
-const SUPABASE_URL = 'https://SEU_PROJECT_URL.supabase.co';  
-const SUPABASE_KEY = 'SEU_ANON_PUBLIC_KEY';  
+// Configuração do Supabase com os seus dados
+const SUPABASE_URL = 'https://ckiqaoymvxdulduuqubn.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNraXFhb3ltdnhkdWxkdXVxdWJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5NzAwNjMsImV4cCI6MjA1NjU0NjA2M30.O7XoRVuZJLvzTtzzjANHQLzlDFSpobCSEvRMwRsjN0M';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
