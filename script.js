@@ -1,10 +1,23 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
-// Conectar ao Supabase
+// 🔗 Conectar ao Supabase
 const SUPABASE_URL = 'https://itzfzcnpesebessjigkh.supabase.co';
-const SUPABASE_KEY = 'SUA_ANON_PUBLIC_KEY';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0emZ6Y25wZXNlYmVzc2ppZ2toIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEwMTk4MjQsImV4cCI6MjA1NjU5NTgyNH0.MO7A54uxXHKcwCvEmsunTofle7EHQ0Ln25vAH2i9vIc';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ✅ Teste inicial para ver se a conexão funciona
+async function testarConexao() {
+    const { data, error } = await supabase.from('animais_perdidos').select('*');
+    if (error) {
+        console.error("❌ Erro ao conectar ao Supabase:", error);
+    } else {
+        console.log("✅ Conexão bem-sucedida! Dados obtidos:", data);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", testarConexao);
+
 
 // Mostrar/Esconder Formulário
 document.addEventListener("DOMContentLoaded", () => {
