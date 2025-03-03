@@ -16,29 +16,33 @@ async function testarConexao() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", testarConexao);
-
-
-// Mostrar/Esconder Formulário
 document.addEventListener("DOMContentLoaded", () => {
+    testarConexao();
+    carregarAnimais();
+
+    // ✅ Garantir que o botão do doguinho funcione corretamente
     const botaoCadastrar = document.getElementById("btn-cadastrar");
     const formularioCadastro = document.getElementById("cadastroForm");
 
     if (botaoCadastrar && formularioCadastro) {
         botaoCadastrar.addEventListener("click", () => {
+            console.log("🐶 Botão de cadastro clicado!"); // Log para ver se está funcionando
             formularioCadastro.classList.toggle("oculto"); // Alterna entre mostrar/ocultar
         });
     } else {
         console.error("❌ Erro: Elementos do formulário não encontrados.");
     }
+
+    // ✅ Evento para cadastrar animal
+    document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
 });
 
-// Carregar Animais
+// ✅ Função para carregar animais
 async function carregarAnimais() {
     let { data: animais, error } = await supabase.from('animais_perdidos').select('*');
 
     if (error) {
-        console.error("Erro ao buscar animais:", error);
+        console.error("❌ Erro ao buscar animais:", error);
         return;
     }
 
@@ -58,7 +62,7 @@ async function carregarAnimais() {
     });
 }
 
-// Cadastrar Animal
+// ✅ Função para cadastrar animal
 async function enviarParaSupabase(event) {
     event.preventDefault();
 
@@ -66,16 +70,24 @@ async function enviarParaSupabase(event) {
     let local = document.querySelector("#local").value.trim();
     let contato = document.querySelector("#contato").value.trim();
 
+    if (!nome || !local || !contato) {
+        alert("⚠️ Preencha todos os campos obrigatórios.");
+        return;
+    }
+
+    console.log("📡 Enviando para o Supabase:", { nome, local, contato });
+
     let { data, error } = await supabase.from('animais_perdidos').insert([
         { nome, local, contato }
     ]);
 
-    if (!error) {
+    if (error) {
+        console.error("❌ Erro ao cadastrar no Supabase:", error);
+        alert("Erro ao cadastrar. Verifique o Console.");
+    } else {
+        console.log("✅ Cadastro realizado com sucesso!", data);
         alert("Animal cadastrado com sucesso!");
         document.querySelector("#formAnimal").reset();
         carregarAnimais();
     }
 }
-
-document.addEventListener("DOMContentLoaded", carregarAnimais);
-document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
