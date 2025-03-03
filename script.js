@@ -6,7 +6,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ✅ Teste inicial para ver se a conexão funciona
+// ✅ Testar Conexão com o Supabase
 async function testarConexao() {
     const { data, error } = await supabase.from('animais_perdidos').select('*');
     if (error) {
@@ -16,7 +16,7 @@ async function testarConexao() {
     }
 }
 
-// ✅ Garantir que o botão do doguinho funciona corretamente
+// ✅ Garantir que o botão do doguinho funcione corretamente
 document.addEventListener("DOMContentLoaded", () => {
     testarConexao();
     carregarAnimais();
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (botaoCadastrar && formularioCadastro) {
         botaoCadastrar.addEventListener("click", () => {
             console.log("🐶 Botão do doguinho clicado!");
-            formularioCadastro.classList.toggle("oculto"); // Mostra/oculta o formulário
+            formularioCadastro.style.display = (formularioCadastro.style.display === "none") ? "block" : "none";
         });
     } else {
         console.error("❌ Erro: Elementos do formulário não encontrados.");
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
 });
 
-// ✅ Função para carregar animais
+// ✅ Função para carregar animais na página
 async function carregarAnimais() {
     let { data: animais, error } = await supabase.from('animais_perdidos').select('*');
 
@@ -63,7 +63,7 @@ async function carregarAnimais() {
     });
 }
 
-// ✅ Função para cadastrar animal
+// ✅ Função para cadastrar um novo animal no Supabase
 async function enviarParaSupabase(event) {
     event.preventDefault();
 
@@ -89,6 +89,6 @@ async function enviarParaSupabase(event) {
         console.log("✅ Cadastro realizado com sucesso!", data);
         alert("Animal cadastrado com sucesso!");
         document.querySelector("#formAnimal").reset();
-        carregarAnimais();
+        carregarAnimais(); // Atualizar a lista automaticamente
     }
 }
