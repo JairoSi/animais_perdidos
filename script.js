@@ -36,9 +36,12 @@ async function testarConexao() {
     }
 }
 
-// ✅ Função para carregar animais na página
+// ✅ Função para carregar apenas os animais com `exibir = true`
 async function carregarAnimais() {
-    let { data: animais, error } = await supabase.from('animais_perdidos').select('*');
+    let { data: animais, error } = await supabase
+        .from('animais_perdidos')
+        .select('*')
+        .eq('exibir', true); // Exibe apenas registros com exibir = true
 
     if (error) {
         console.error("❌ Erro ao buscar animais:", error);
@@ -115,7 +118,7 @@ async function enviarParaSupabase(event) {
     }
 
     let { data, error } = await supabase.from('animais_perdidos').insert([
-        { nome, local, contato, imagem_url: imagemUrl, encontrado: false }
+        { nome, local, contato, imagem_url: imagemUrl, encontrado: false, exibir: true }
     ]);
 
     if (!error) {
@@ -143,4 +146,5 @@ async function marcarEncontrado(id) {
     }
 }
 
+// ✅ Tornar a função marcarEncontrado acessível globalmente
 window.marcarEncontrado = marcarEncontrado;
