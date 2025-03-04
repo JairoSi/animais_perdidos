@@ -70,11 +70,24 @@ async function carregarAnimais() {
             <button class="btn-encontrado" data-id="${animal.id}">✔ Marcar como Encontrado</button>
         `;
 
-        // ✅ Adicionar evento de clique ao botão dinamicamente
         div.querySelector(".btn-encontrado").addEventListener("click", function () {
             marcarEncontrado(this.dataset.id);
         });
     });
+}
+
+// ✅ Função para fazer upload da imagem no Supabase
+async function uploadImagem(file) {
+    const fileName = `animais_perdidos/${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage.from('animais').upload(fileName, file);
+
+    if (error) {
+        console.error("❌ Erro ao fazer upload da imagem:", error);
+        alert("Erro ao enviar a imagem.");
+        return null;
+    }
+
+    return `${SUPABASE_URL}/storage/v1/object/public/animais/${fileName}`;
 }
 
 // ✅ Função para cadastrar um novo animal no Supabase
@@ -84,14 +97,25 @@ async function enviarParaSupabase(event) {
     let nome = document.querySelector("#nome").value.trim();
     let local = document.querySelector("#local").value.trim();
     let contato = document.querySelector("#contato").value.trim();
+    let imagemInput = document.querySelector("#imagem").files[0];
 
     if (!nome || !local || !contato) {
         alert("⚠️ Preencha todos os campos obrigatórios.");
         return;
     }
 
+    let imagemUrl = "https://placehold.co/150"; // Imagem padrão caso não seja enviada
+
+    if (imagemInput) {
+        imagemUrl = await uploadImagem(imagemInput);
+        if (!imagemUrl) {
+            alert("Erro ao enviar a imagem. Tente novamente.");
+            return;
+        }
+    }
+
     let { data, error } = await supabase.from('animais_perdidos').insert([
-        { nome, local, contato, encontrado: false }
+        { nome, local, contato, imagem_url: imagemUrl, encontrado: false }
     ]);
 
     if (!error) {
@@ -119,5 +143,4 @@ async function marcarEncontrado(id) {
     }
 }
 
-// ✅ Tornar a função marcarEncontrado disponível globalmente
 window.marcarEncontrado = marcarEncontrado;
