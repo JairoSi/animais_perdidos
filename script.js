@@ -67,8 +67,13 @@ async function carregarAnimais() {
             <h3>${animal.nome}</h3>
             <p><strong>Local:</strong> ${animal.local}</p>
             <p><strong>Contato:</strong> ${animal.contato}</p>
-            <button onclick="marcarEncontrado(${animal.id})">✔ Marcar como Encontrado</button>
+            <button class="btn-encontrado" data-id="${animal.id}">✔ Marcar como Encontrado</button>
         `;
+
+        // ✅ Adicionar evento de clique ao botão dinamicamente
+        div.querySelector(".btn-encontrado").addEventListener("click", function () {
+            marcarEncontrado(this.dataset.id);
+        });
     });
 }
 
