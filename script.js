@@ -6,18 +6,24 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ✅ Garantir que o botão do doguinho funciona corretamente
+// ✅ Garantir que os botões funcionam corretamente
 document.addEventListener("DOMContentLoaded", () => {
     testarConexao();
     carregarAnimais();
 
     const botaoCadastrar = document.getElementById("btn-cadastrar");
     const formularioCadastro = document.getElementById("cadastroForm");
+    const botaoFechar = document.getElementById("btn-fechar"); // Novo botão de fechar
 
     if (botaoCadastrar && formularioCadastro) {
         botaoCadastrar.addEventListener("click", () => {
             console.log("🐶 Botão do doguinho clicado!");
-            formularioCadastro.style.display = (formularioCadastro.style.display === "none") ? "block" : "none";
+            formularioCadastro.style.display = "block";
+        });
+
+        botaoFechar.addEventListener("click", () => {
+            console.log("❌ Fechando formulário.");
+            formularioCadastro.style.display = "none";
         });
     } else {
         console.error("❌ Erro: Elementos do formulário não encontrados.");
