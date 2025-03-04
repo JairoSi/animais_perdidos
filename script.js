@@ -55,7 +55,6 @@ async function carregarAnimais() {
         let div = document.createElement("div");
         div.classList.add("card");
 
-        // Se o animal foi encontrado, ele terá um destaque verde
         if (animal.encontrado) {
             div.classList.add("encontrado");
             listaEncontrados.appendChild(div);
@@ -114,3 +113,6 @@ async function marcarEncontrado(id) {
         carregarAnimais();
     }
 }
+
+// ✅ Tornar a função marcarEncontrado disponível globalmente
+window.marcarEncontrado = marcarEncontrado;
