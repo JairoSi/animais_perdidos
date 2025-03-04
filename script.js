@@ -16,12 +16,11 @@ async function testarConexao() {
     }
 }
 
-// ✅ Garantir que o botão do doguinho funcione corretamente
+// ✅ Abrir/Fechar Formulário de Cadastro
 document.addEventListener("DOMContentLoaded", () => {
     testarConexao();
     carregarAnimais();
 
-    // 🔹 Seletor do botão e do formulário
     const botaoCadastrar = document.getElementById("btn-cadastrar");
     const formularioCadastro = document.getElementById("cadastroForm");
 
@@ -34,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("❌ Erro: Elementos do formulário não encontrados.");
     }
 
-    // ✅ Evento para cadastrar animal
     document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
 });
 
@@ -47,19 +45,31 @@ async function carregarAnimais() {
         return;
     }
 
-    let listaAnimais = document.querySelector("#listaAnimais");
-    listaAnimais.innerHTML = "";
+    let listaPerdidos = document.querySelector("#listaPerdidos");
+    let listaEncontrados = document.querySelector("#listaEncontrados");
+
+    listaPerdidos.innerHTML = "";
+    listaEncontrados.innerHTML = "";
 
     animais.forEach(animal => {
         let div = document.createElement("div");
         div.classList.add("card");
+
+        // Se o animal foi encontrado, ele terá uma borda verde
+        if (animal.encontrado) {
+            div.classList.add("encontrado");
+            listaEncontrados.appendChild(div);
+        } else {
+            listaPerdidos.appendChild(div);
+        }
+
         div.innerHTML = `
             <img src="${animal.imagem_url || 'https://via.placeholder.com/150'}" alt="${animal.nome}">
             <h3>${animal.nome}</h3>
             <p><strong>Local:</strong> ${animal.local}</p>
             <p><strong>Contato:</strong> ${animal.contato}</p>
+            <button onclick="marcarEncontrado(${animal.id})">✔ Marcar como Encontrado</button>
         `;
-        listaAnimais.appendChild(div);
     });
 }
 
@@ -76,19 +86,23 @@ async function enviarParaSupabase(event) {
         return;
     }
 
-    console.log("📡 Enviando para o Supabase:", { nome, local, contato });
-
     let { data, error } = await supabase.from('animais_perdidos').insert([
-        { nome, local, contato }
+        { nome, local, contato, encontrado: false }
     ]);
 
-    if (error) {
-        console.error("❌ Erro ao cadastrar no Supabase:", error);
-        alert("Erro ao cadastrar. Verifique o Console.");
-    } else {
-        console.log("✅ Cadastro realizado com sucesso!", data);
-        alert("Animal cadastrado com sucesso!");
+    if (!error) {
+        alert("✅ Animal cadastrado com sucesso!");
+        document.getElementById("cadastroForm").style.display = "none";
         document.querySelector("#formAnimal").reset();
-        carregarAnimais(); // Atualizar a lista automaticamente
+        carregarAnimais();
+    } else {
+        console.error("❌ Erro ao cadastrar no Supabase:", error);
+        alert("Erro ao cadastrar.");
     }
+}
+
+// ✅ Função para marcar animal como encontrado
+async function marcarEncontrado(id) {
+    await supabase.from('animais_perdidos').update({ encontrado: true }).match({ id });
+    carregarAnimais();
 }
