@@ -55,7 +55,7 @@ async function carregarAnimais() {
         let div = document.createElement("div");
         div.classList.add("card");
 
-        // Se o animal foi encontrado, ele terá uma borda verde
+        // Se o animal foi encontrado, ele terá um destaque verde
         if (animal.encontrado) {
             div.classList.add("encontrado");
             listaEncontrados.appendChild(div);
@@ -64,7 +64,7 @@ async function carregarAnimais() {
         }
 
         div.innerHTML = `
-            <img src="${animal.imagem_url || 'https://via.placeholder.com/150'}" alt="${animal.nome}">
+            <img src="${animal.imagem_url || 'https://placehold.co/150'}" alt="${animal.nome}">
             <h3>${animal.nome}</h3>
             <p><strong>Local:</strong> ${animal.local}</p>
             <p><strong>Contato:</strong> ${animal.contato}</p>
@@ -103,6 +103,14 @@ async function enviarParaSupabase(event) {
 
 // ✅ Função para marcar animal como encontrado
 async function marcarEncontrado(id) {
-    await supabase.from('animais_perdidos').update({ encontrado: true }).match({ id });
-    carregarAnimais();
+    let { error } = await supabase.from('animais_perdidos').update({ encontrado: true }).match({ id });
+
+    if (error) {
+        console.error("❌ Erro ao marcar como encontrado:", error);
+        alert("Erro ao marcar como encontrado.");
+    } else {
+        console.log(`✅ Animal com ID ${id} foi marcado como encontrado!`);
+        alert("Animal marcado como encontrado!");
+        carregarAnimais();
+    }
 }
