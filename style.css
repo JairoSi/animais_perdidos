@@ -58,13 +58,21 @@ header {
     display: block;
 }
 
-/* Lista de Animais */
-#listaAnimais {
+/* Seções de Animais Perdidos e Encontrados */
+#listaPerdidos, #listaEncontrados {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
     margin-top: 20px;
+    padding: 20px;
+}
+
+/* Títulos das Listas */
+.animais h2 {
+    font-size: 22px;
+    color: #374151;
+    margin-bottom: 10px;
 }
 
 /* Cartões */
@@ -80,6 +88,7 @@ header {
     transition: 0.3s;
 }
 
+/* Cartão de Animais Perdidos */
 .card img {
     width: 100%;
     height: auto;
@@ -95,4 +104,10 @@ header {
 .card p {
     font-size: 14px;
     color: #666;
+}
+
+/* Estilo para animais encontrados */
+.encontrado {
+    border: 3px solid green;
+    background-color: #e6ffe6;
 }
