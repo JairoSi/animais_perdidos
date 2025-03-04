@@ -6,17 +6,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ✅ Testar Conexão com o Supabase
-async function testarConexao() {
-    const { data, error } = await supabase.from('animais_perdidos').select('*');
-    if (error) {
-        console.error("❌ Erro ao conectar ao Supabase:", error);
-    } else {
-        console.log("✅ Conexão bem-sucedida! Dados obtidos:", data);
-    }
-}
-
-// ✅ Abrir/Fechar Formulário de Cadastro
+// ✅ Garantir que o botão do doguinho funciona corretamente
 document.addEventListener("DOMContentLoaded", () => {
     testarConexao();
     carregarAnimais();
@@ -35,6 +25,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
 });
+
+// ✅ Testar Conexão com o Supabase
+async function testarConexao() {
+    const { data, error } = await supabase.from('animais_perdidos').select('*');
+    if (error) {
+        console.error("❌ Erro ao conectar ao Supabase:", error);
+    } else {
+        console.log("✅ Conexão bem-sucedida! Dados obtidos:", data);
+    }
+}
 
 // ✅ Função para carregar animais na página
 async function carregarAnimais() {
