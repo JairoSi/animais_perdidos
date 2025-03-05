@@ -22,8 +22,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const formularioLogin = document.getElementById("loginForm");
     const botaoFecharLogin = document.getElementById("btn-fechar-login");
 
-    console.log("🔍 Botão de login encontrado:", botaoLogin);
-    console.log("🔍 Formulário de login encontrado:", formularioLogin);
+    const botaoAbrirCadastro = document.getElementById("btn-abrir-cadastro");
+    const formularioCadastroUsuario = document.getElementById("cadastroUsuarioForm");
+    const botaoFecharCadastroUsuario = document.getElementById("btn-fechar-cadastro");
+
+    if (botaoAbrirCadastro && formularioCadastroUsuario) {
+        botaoAbrirCadastro.addEventListener("click", () => {
+            formularioCadastroUsuario.style.display = "block";
+        });
+
+        botaoFecharCadastroUsuario.addEventListener("click", () => {
+            formularioCadastroUsuario.style.display = "none";
+        });
+    }
 
     if (botaoCadastrar && formularioCadastro) {
         botaoCadastrar.addEventListener("click", () => {
@@ -51,97 +62,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Garantir que os eventos estão sendo registrados corretamente
     document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
+    document.querySelector("#formCadastro").addEventListener("submit", cadastrarUsuario);
     document.querySelector("#formLogin").addEventListener("submit", loginUsuario);
     document.querySelector("#esqueci-senha").addEventListener("click", recuperarSenha);
 });
 
-// ✅ Testar Conexão com o Supabase
-async function testarConexao() {
-    try {
-        const { data, error } = await supabase.from('animais_perdidos').select('*');
-        if (error) {
-            console.error("❌ Erro ao conectar ao Supabase:", error);
-        } else {
-            console.log("✅ Conexão bem-sucedida! Dados obtidos:", data);
-        }
-    } catch (err) {
-        console.error("⚠️ Erro inesperado ao conectar ao Supabase:", err);
-    }
-}
-
-// ✅ Função para carregar animais
-async function carregarAnimais() {
-    let { data: animais, error } = await supabase.from('animais_perdidos').select('*').eq('exibir', true);
+// ✅ Função para fazer upload da foto de perfil no Supabase Storage
+async function uploadFoto(file) {
+    const fileName = `usuarios/${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage.from('usuarios').upload(fileName, file);
 
     if (error) {
-        console.error("❌ Erro ao buscar animais:", error);
-        return;
+        console.error("❌ Erro ao fazer upload da foto:", error);
+        alert("Erro ao enviar a foto.");
+        return null;
     }
 
-    let listaPerdidos = document.querySelector("#listaPerdidos");
-    let listaEncontrados = document.querySelector("#listaEncontrados");
-
-    listaPerdidos.innerHTML = "";
-    listaEncontrados.innerHTML = "";
-
-    animais.forEach(animal => {
-        let div = document.createElement("div");
-        div.classList.add("card");
-
-        if (animal.encontrado) {
-            div.classList.add("encontrado");
-            listaEncontrados.appendChild(div);
-        } else {
-            listaPerdidos.appendChild(div);
-        }
-
-        div.innerHTML = `
-            <img src="${animal.imagem_url || 'https://placehold.co/150'}" alt="${animal.nome}">
-            <h3>${animal.nome}</h3>
-            <p><strong>Local:</strong> ${animal.local}</p>
-            <p><strong>Contato:</strong> ${animal.contato}</p>
-            <button class="btn-encontrado" data-id="${animal.id}">✔ Marcar como Encontrado</button>
-        `;
-
-        div.querySelector(".btn-encontrado").addEventListener("click", function () {
-            marcarEncontrado(this.dataset.id);
-        });
-    });
+    return `${SUPABASE_URL}/storage/v1/object/public/usuarios/${fileName}`;
 }
 
-// ✅ Função para cadastrar um animal no Supabase
-async function enviarParaSupabase(event) {
+// ✅ Função para cadastrar um usuário no Supabase
+async function cadastrarUsuario(event) {
     event.preventDefault();
 
-    let nome = document.querySelector("#nome").value.trim();
-    let local = document.querySelector("#local").value.trim();
-    let contato = document.querySelector("#contato").value.trim();
-    let imagemInput = document.querySelector("#imagem").files[0];
+    let nome = document.getElementById("cadastro-nome").value.trim();
+    let email = document.getElementById("cadastro-email").value.trim();
+    let senha = document.getElementById("cadastro-senha").value.trim();
+    let fotoInput = document.getElementById("cadastro-foto").files[0];
 
-    if (!nome || !local || !contato) {
+    if (!nome || !email || !senha) {
         alert("⚠️ Preencha todos os campos obrigatórios.");
         return;
     }
 
-    let imagemUrl = "https://placehold.co/150"; // Imagem padrão caso não seja enviada
+    let fotoUrl = "https://placehold.co/150"; // Imagem padrão caso o usuário não envie uma foto
 
-    if (imagemInput) {
-        imagemUrl = await uploadImagem(imagemInput);
-        if (!imagemUrl) {
-            alert("Erro ao enviar a imagem. Tente novamente.");
+    if (fotoInput) {
+        fotoUrl = await uploadFoto(fotoInput);
+        if (!fotoUrl) {
+            alert("Erro ao enviar a foto. Tente novamente.");
             return;
         }
     }
 
-    let { data, error } = await supabase.from('animais_perdidos').insert([
-        { nome, local, contato, imagem_url: imagemUrl, encontrado: false, exibir: true }
+    let { data, error } = await supabase.from('usuarios').insert([
+        { nome, email, senha, foto_url: fotoUrl, role: "tutor", status: "pendente" }
     ]);
 
     if (!error) {
-        alert("✅ Animal cadastrado com sucesso!");
-        document.getElementById("cadastroForm").style.display = "none";
-        document.querySelector("#formAnimal").reset();
-        carregarAnimais();
+        alert("✅ Cadastro realizado com sucesso! Aguarde a aprovação de um administrador.");
+        document.getElementById("cadastroUsuarioForm").style.display = "none";
+        document.querySelector("#formCadastro").reset();
     } else {
         console.error("❌ Erro ao cadastrar no Supabase:", error);
         alert("Erro ao cadastrar.");
