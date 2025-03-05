@@ -10,55 +10,76 @@
 <body>
     <header>
         <h1>Animais Perdidos 🐾</h1>
+        <!-- Botão de Login no Canto Superior -->
+        <div class="login-container">
+            <button id="btn-login" class="botao-login">🔑 Login</button>
+        </div>
     </header>
 
-<!-- Botão Flutuante Melhorado -->
-<div class="botao-cadastro-container">
-    <button id="btn-cadastrar" class="botao-flutuante" title="Clique para cadastrar um animal perdido">
-        &#128054; Cadastre o fujão aqui!
-    </button>
-</div>
+    <!-- Formulário de Login -->
+    <section class="login" id="loginForm" style="display: none;">
+        <div class="login-header">
+            <h2>Entrar</h2>
+            <button id="btn-fechar-login" class="fechar-formulario">&times;</button>
+        </div>
+        <form id="formLogin">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" placeholder="Digite seu e-mail" required>
 
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" placeholder="Digite sua senha" required>
 
-<!-- Formulário de Cadastro Melhorado -->
-<section class="cadastro" id="cadastroForm" style="display: none;">
-    <div class="cadastro-header">
-        <h2>Cadastrar um Animal Perdido</h2>
-        <button id="btn-fechar" class="fechar-formulario">&times;</button>
+            <button type="submit" class="botao-enviar">Entrar</button>
+            <p><a href="#" id="esqueci-senha">Esqueceu a senha?</a></p>
+        </form>
+        <p id="mensagem-login"></p>
+    </section>
+
+    <!-- Botão Flutuante Melhorado -->
+    <div class="botao-cadastro-container">
+        <button id="btn-cadastrar" class="botao-flutuante" title="Clique para cadastrar um animal perdido">
+            &#128054; Cadastre o fujão aqui!
+        </button>
     </div>
-    <form id="formAnimal">
-        <label for="nome">Nome do Animal:</label>
-        <input type="text" id="nome" placeholder="Digite o nome do animal" required>
 
-        <label for="local">Local Perdido:</label>
-        <input type="text" id="local" placeholder="Informe o local onde foi visto pela última vez" required>
+    <!-- Formulário de Cadastro Melhorado -->
+    <section class="cadastro" id="cadastroForm" style="display: none;">
+        <div class="cadastro-header">
+            <h2>Cadastrar um Animal Perdido</h2>
+            <button id="btn-fechar" class="fechar-formulario">&times;</button>
+        </div>
+        <form id="formAnimal">
+            <label for="nome">Nome do Animal:</label>
+            <input type="text" id="nome" placeholder="Digite o nome do animal" required>
 
-        <label for="contato">Contato:</label>
-        <input type="text" id="contato" placeholder="Seu telefone ou e-mail" required>
+            <label for="local">Local Perdido:</label>
+            <input type="text" id="local" placeholder="Informe o local onde foi visto pela última vez" required>
 
-        <label for="imagem">Foto do Animal:</label>
-        <input type="file" id="imagem" accept="image/*">
+            <label for="contato">Contato:</label>
+            <input type="text" id="contato" placeholder="Seu telefone ou e-mail" required>
 
-        <button type="submit" class="botao-enviar">Cadastrar</button>
-    </form>
-</section>
+            <label for="imagem">Foto do Animal:</label>
+            <input type="file" id="imagem" accept="image/*">
 
-   <!-- Lista de Animais Perdidos -->
-<section class="animais">
-    <h2>🐾 Animais Perdidos</h2>
-    <div id="listaPerdidos">
-        <!-- Os animais ainda não encontrados aparecerão aqui -->
-    </div>
-</section>
+            <button type="submit" class="botao-enviar">Cadastrar</button>
+        </form>
+    </section>
 
-<!-- Lista de Animais Encontrados -->
-<section class="animais">
-    <h2>✅ Animais Encontrados</h2>
-    <div id="listaEncontrados">
-        <!-- Os animais encontrados aparecerão aqui -->
-    </div>
-</section>
+    <!-- Lista de Animais Perdidos -->
+    <section class="animais">
+        <h2>🐾 Animais Perdidos</h2>
+        <div id="listaPerdidos">
+            <!-- Os animais ainda não encontrados aparecerão aqui -->
+        </div>
+    </section>
 
+    <!-- Lista de Animais Encontrados -->
+    <section class="animais">
+        <h2>✅ Animais Encontrados</h2>
+        <div id="listaEncontrados">
+            <!-- Os animais encontrados aparecerão aqui -->
+        </div>
+    </section>
 
     <footer>
         <p>© 2024 Animais Perdidos | Feito para ajudar nossos amigos peludos! 🐾</p>
