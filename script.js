@@ -24,7 +24,7 @@ async function testarConexao() {
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🔍 DOM carregado, iniciando funções...");
 
-    testarConexao();
+    testarConexao(); // ✅ Agora a função está declarada antes de ser chamada
     
     // Selecionando os botões e formulários
     const botaoCadastrar = document.getElementById("btn-cadastrar");
@@ -79,108 +79,3 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#formLogin").addEventListener("submit", loginUsuario);
     document.querySelector("#esqueci-senha").addEventListener("click", recuperarSenha);
 });
-
-// ✅ Função para fazer upload da foto de perfil no Supabase Storage
-async function uploadFoto(file) {
-    if (!file) return null;
-
-    const fileName = `usuarios/${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage.from('usuarios').upload(fileName, file);
-
-    if (error) {
-        console.error("❌ Erro ao fazer upload da foto:", error);
-        alert("Erro ao enviar a foto.");
-        return null;
-    }
-
-    return `${SUPABASE_URL}/storage/v1/object/public/usuarios/${fileName}`;
-}
-
-// ✅ Função para cadastrar um usuário no Supabase
-async function cadastrarUsuario(event) {
-    event.preventDefault();
-
-    let nome = document.getElementById("cadastro-nome").value.trim();
-    let email = document.getElementById("cadastro-email").value.trim();
-    let senha = document.getElementById("cadastro-senha").value.trim();
-    let fotoInput = document.getElementById("cadastro-foto").files[0];
-
-    if (!nome || !email || !senha) {
-        alert("⚠️ Preencha todos os campos obrigatórios.");
-        return;
-    }
-
-    let fotoUrl = "https://placehold.co/150"; // Imagem padrão caso o usuário não envie uma foto
-
-    if (fotoInput) {
-        fotoUrl = await uploadFoto(fotoInput);
-        if (!fotoUrl) {
-            alert("Erro ao enviar a foto. Tente novamente.");
-            return;
-        }
-    }
-
-    let { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: senha
-    });
-
-    if (error) {
-        alert("❌ Erro ao cadastrar: " + error.message);
-        return;
-    }
-
-    // Após o cadastro bem-sucedido, salvar o usuário na tabela personalizada
-    let { data: userData, error: userError } = await supabase.from('usuarios').insert([
-        { id: data.user.id, nome, email, foto_url: fotoUrl, role: "tutor", status: "pendente" }
-    ]);
-
-    if (!userError) {
-        alert("✅ Cadastro realizado com sucesso! Aguarde a aprovação de um administrador.");
-        document.getElementById("cadastroUsuarioForm").style.display = "none";
-        document.querySelector("#formCadastro").reset();
-    } else {
-        console.error("❌ Erro ao cadastrar no Supabase:", userError);
-        alert("Erro ao cadastrar.");
-    }
-}
-
-// ✅ Função para autenticar usuário
-async function loginUsuario(event) {
-    event.preventDefault();
-
-    let email = document.getElementById("email").value.trim();
-    let senha = document.getElementById("senha").value.trim();
-
-    console.log(`📩 Tentando login com e-mail: ${email}`);
-
-    let { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: senha
-    });
-
-    if (error) {
-        console.error("❌ Erro no login:", error);
-        alert(`❌ Erro no login: ${error.message}`);
-    } else {
-        console.log("✅ Login realizado com sucesso!", data);
-        alert("✅ Login realizado com sucesso!");
-        document.getElementById("loginForm").style.display = "none";
-    }
-}
-
-// ✅ Função para redefinir a senha
-async function recuperarSenha() {
-    let email = prompt("Digite seu e-mail para redefinir a senha:");
-
-    if (email) {
-        let { error } = await supabase.auth.resetPasswordForEmail(email);
-
-        if (error) {
-            alert("❌ Erro ao solicitar redefinição de senha.");
-            console.error(error);
-        } else {
-            alert("📩 E-mail de recuperação enviado! Verifique sua caixa de entrada.");
-        }
-    }
-}
