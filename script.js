@@ -20,58 +20,6 @@ async function testarConexao() {
     }
 }
 
-// ✅ Função para carregar animais
-async function carregarAnimais() {
-    let { data: animais, error } = await supabase
-        .from('animais_perdidos')
-        .select('*')
-        .eq('exibir', true); // Filtra apenas os animais que devem ser exibidos
-
-    if (error) {
-        console.error("❌ Erro ao buscar animais:", error);
-        return;
-    }
-
-    let listaPerdidos = document.querySelector("#listaPerdidos");
-    let listaEncontrados = document.querySelector("#listaEncontrados");
-
-    listaPerdidos.innerHTML = "";
-    listaEncontrados.innerHTML = "";
-
-    animais.forEach(animal => {
-        let div = document.createElement("div");
-        div.classList.add("card");
-
-        if (animal.encontrado) {
-            div.classList.add("encontrado");
-            listaEncontrados.appendChild(div);
-        } else {
-            listaPerdidos.appendChild(div);
-        }
-
-        div.innerHTML = `
-            <img src="${animal.imagem_url || 'https://placehold.co/150'}" alt="${animal.nome}">
-            <h3>${animal.nome}</h3>
-            <p><strong>Local:</strong> ${animal.local}</p>
-            <p><strong>Contato:</strong> ${animal.contato}</p>
-            <button class="btn-encontrado" data-id="${animal.id}">✔ Marcar como Encontrado</button>
-        `;
-
-        div.querySelector(".btn-encontrado").addEventListener("click", function () {
-            marcarEncontrado(this.dataset.id);
-        });
-
-        // Adiciona as bordas de acordo com o status
-        if (animal.status === 'pendente') {
-            div.classList.add('pendente'); // Laranja
-        } else if (animal.status === 'aprovado') {
-            div.classList.add('aprovado'); // Verde
-        } else if (animal.status === 'reprovado') {
-            div.classList.add('reprovado'); // Vermelho
-        }
-    });
-}
-
 // ✅ Função para cadastrar um animal no Supabase
 async function enviarParaSupabase(event) {
     event.preventDefault();
@@ -97,14 +45,13 @@ async function enviarParaSupabase(event) {
     }
 
     let { data, error } = await supabase.from('animais_perdidos').insert([
-        { nome, local, contato, imagem_url: imagemUrl, encontrado: false, exibir: true, status: 'pendente' } // status pendente por padrão
+        { nome, local, contato, imagem_url: imagemUrl, encontrado: false, exibir: true }
     ]);
 
     if (!error) {
         alert("✅ Animal cadastrado com sucesso!");
         document.getElementById("cadastroForm").style.display = "none";
         document.querySelector("#formAnimal").reset();
-        carregarAnimais();
     } else {
         console.error("❌ Erro ao cadastrar no Supabase:", error);
         alert("Erro ao cadastrar.");
@@ -118,26 +65,35 @@ async function uploadImagem(file) {
 
     if (error) {
         console.error("❌ Erro ao fazer upload da imagem:", error);
-        alert("Erro ao enviar a imagem.");
         return null;
     }
 
     return `${SUPABASE_URL}/storage/v1/object/public/animais/${fileName}`;
 }
 
-// ✅ Função para marcar animal como encontrado
-async function marcarEncontrado(id) {
-    let { error } = await supabase.from('animais_perdidos').update({ encontrado: true }).match({ id });
+// ✅ Função de conexão inicial
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("🔍 DOM carregado, iniciando funções...");
 
-    if (error) {
-        console.error("❌ Erro ao marcar como encontrado:", error);
-        alert("Erro ao marcar como encontrado.");
-    } else {
-        console.log(`✅ Animal com ID ${id} foi marcado como encontrado!`);
-        alert("Animal marcado como encontrado!");
-        carregarAnimais();
+    testarConexao(); // ✅ Agora a função está declarada antes de ser chamada
+    
+    // Selecionando os botões e formulários
+    const botaoCadastrar = document.getElementById("btn-cadastrar");
+    const formularioCadastro = document.getElementById("cadastroForm");
+    const botaoFecharCadastro = document.getElementById("btn-fechar");
+
+    if (botaoCadastrar && formularioCadastro) {
+        botaoCadastrar.addEventListener("click", () => {
+            console.log("🐶 Botão de cadastro clicado!");
+            formularioCadastro.style.display = "block";
+        });
+
+        botaoFecharCadastro.addEventListener("click", () => {
+            console.log("❌ Fechando formulário de cadastro.");
+            formularioCadastro.style.display = "none";
+        });
     }
-}
 
-// ✅ Tornar a função marcarEncontrado acessível globalmente
-window.marcarEncontrado = marcarEncontrado;
+    // Garantir que os eventos estão sendo registrados corretamente
+    document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
+});
