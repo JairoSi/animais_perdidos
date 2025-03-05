@@ -6,13 +6,26 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// ✅ Testar Conexão com o Supabase
+async function testarConexao() {
+    try {
+        const { data, error } = await supabase.from('usuarios').select('*');
+        if (error) {
+            console.error("❌ Erro ao conectar ao Supabase:", error);
+        } else {
+            console.log("✅ Conexão bem-sucedida! Dados obtidos:", data);
+        }
+    } catch (err) {
+        console.error("⚠️ Erro inesperado ao conectar ao Supabase:", err);
+    }
+}
+
 // ✅ Função de conexão inicial
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🔍 DOM carregado, iniciando funções...");
 
     testarConexao();
-    carregarAnimais();
-
+    
     // Selecionando os botões e formulários
     const botaoCadastrar = document.getElementById("btn-cadastrar");
     const formularioCadastro = document.getElementById("cadastroForm");
@@ -66,20 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#formLogin").addEventListener("submit", loginUsuario);
     document.querySelector("#esqueci-senha").addEventListener("click", recuperarSenha);
 });
-
-// ✅ Testar Conexão com o Supabase
-async function testarConexao() {
-    try {
-        const { data, error } = await supabase.from('usuarios').select('*');
-        if (error) {
-            console.error("❌ Erro ao conectar ao Supabase:", error);
-        } else {
-            console.log("✅ Conexão bem-sucedida! Dados obtidos:", data);
-        }
-    } catch (err) {
-        console.error("⚠️ Erro inesperado ao conectar ao Supabase:", err);
-    }
-}
 
 // ✅ Função para fazer upload da foto de perfil no Supabase Storage
 async function uploadFoto(file) {
