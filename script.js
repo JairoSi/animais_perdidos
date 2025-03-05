@@ -6,6 +6,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// ✅ Função de conexão inicial
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🔍 DOM carregado, iniciando funções...");
 
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Garantir que os eventos estão sendo registrados
+    // Garantir que os eventos estão sendo registrados corretamente
     document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
     document.querySelector("#formLogin").addEventListener("submit", loginUsuario);
     document.querySelector("#esqueci-senha").addEventListener("click", recuperarSenha);
@@ -108,6 +109,45 @@ async function carregarAnimais() {
     });
 }
 
+// ✅ Função para cadastrar um animal no Supabase
+async function enviarParaSupabase(event) {
+    event.preventDefault();
+
+    let nome = document.querySelector("#nome").value.trim();
+    let local = document.querySelector("#local").value.trim();
+    let contato = document.querySelector("#contato").value.trim();
+    let imagemInput = document.querySelector("#imagem").files[0];
+
+    if (!nome || !local || !contato) {
+        alert("⚠️ Preencha todos os campos obrigatórios.");
+        return;
+    }
+
+    let imagemUrl = "https://placehold.co/150"; // Imagem padrão caso não seja enviada
+
+    if (imagemInput) {
+        imagemUrl = await uploadImagem(imagemInput);
+        if (!imagemUrl) {
+            alert("Erro ao enviar a imagem. Tente novamente.");
+            return;
+        }
+    }
+
+    let { data, error } = await supabase.from('animais_perdidos').insert([
+        { nome, local, contato, imagem_url: imagemUrl, encontrado: false, exibir: true }
+    ]);
+
+    if (!error) {
+        alert("✅ Animal cadastrado com sucesso!");
+        document.getElementById("cadastroForm").style.display = "none";
+        document.querySelector("#formAnimal").reset();
+        carregarAnimais();
+    } else {
+        console.error("❌ Erro ao cadastrar no Supabase:", error);
+        alert("Erro ao cadastrar.");
+    }
+}
+
 // ✅ Função para autenticar usuário
 async function loginUsuario(event) {
     event.preventDefault();
@@ -144,17 +184,3 @@ async function recuperarSenha() {
         }
     }
 }
-
-// ✅ Tornar a função marcarEncontrado acessível globalmente
-window.marcarEncontrado = async function (id) {
-    let { error } = await supabase.from('animais_perdidos').update({ encontrado: true }).match({ id });
-
-    if (error) {
-        console.error("❌ Erro ao marcar como encontrado:", error);
-        alert("Erro ao marcar como encontrado.");
-    } else {
-        console.log(`✅ Animal com ID ${id} foi marcado como encontrado!`);
-        alert("Animal marcado como encontrado!");
-        carregarAnimais();
-    }
-};
