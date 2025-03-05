@@ -44,7 +44,7 @@ async function enviarParaSupabase(event) {
         }
     }
 
-    let { data, error } = await supabase.from('animais_perdidos').insert([
+    let { error } = await supabase.from('animais_perdidos').insert([
         { nome, local, contato, imagem_url: imagemUrl, encontrado: false, exibir: true }
     ]);
 
@@ -58,17 +58,70 @@ async function enviarParaSupabase(event) {
     }
 }
 
-// ✅ Função para fazer upload de imagem para o Supabase
-async function uploadImagem(file) {
-    const fileName = `animais/${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage.from('animais').upload(fileName, file);
+// ✅ Função para cadastrar um usuário no Supabase
+async function cadastrarUsuario(event) {
+    event.preventDefault();
+
+    let nome = document.getElementById("cadastro-nome").value.trim();
+    let email = document.getElementById("cadastro-email").value.trim();
+    let senha = document.getElementById("cadastro-senha").value.trim();
+    let fotoInput = document.getElementById("cadastro-foto").files[0];
+
+    if (!nome || !email || !senha) {
+        alert("⚠️ Preencha todos os campos obrigatórios.");
+        return;
+    }
+
+    let fotoUrl = "https://placehold.co/150"; // Imagem padrão caso o usuário não envie uma foto
+
+    if (fotoInput) {
+        fotoUrl = await uploadImagem(fotoInput);
+        if (!fotoUrl) {
+            alert("Erro ao enviar a foto. Tente novamente.");
+            return;
+        }
+    }
+
+    // 🔹 Criar usuário no Supabase Auth
+    let { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: senha
+    });
 
     if (error) {
-        console.error("❌ Erro ao fazer upload da imagem:", error);
+        console.error("❌ Erro ao cadastrar no Supabase Auth:", error);
+        alert("Erro ao cadastrar: " + error.message);
+        return;
+    }
+
+    // 🔹 Salvar o usuário na tabela `usuarios`
+    let { error: userError } = await supabase.from('usuarios').insert([
+        { id: data.user.id, nome, email, foto_url: fotoUrl, role: "tutor", status: "pendente" }
+    ]);
+
+    if (userError) {
+        console.error("❌ Erro ao salvar usuário na tabela `usuarios`:", userError);
+        alert("Erro ao cadastrar. Entre em contato com o suporte.");
+    } else {
+        alert("✅ Cadastro realizado com sucesso! Aguarde a aprovação de um administrador.");
+        document.getElementById("cadastroUsuarioForm").style.display = "none";
+        document.querySelector("#formCadastro").reset();
+    }
+}
+
+// ✅ Função para fazer upload de imagem para o Supabase
+async function uploadImagem(file) {
+    if (!file) return null;
+
+    const fileName = `usuarios/${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage.from('usuarios').upload(fileName, file);
+
+    if (error) {
+        console.error("❌ Erro ao fazer upload da foto:", error);
         return null;
     }
 
-    return `${SUPABASE_URL}/storage/v1/object/public/animais/${fileName}`;
+    return `${SUPABASE_URL}/storage/v1/object/public/usuarios/${fileName}`;
 }
 
 // ✅ Função de conexão inicial
@@ -134,3 +187,4 @@ document.addEventListener("DOMContentLoaded", () => {
 // ✅ Expondo funções globalmente para evitar `ReferenceError`
 window.enviarParaSupabase = enviarParaSupabase;
 window.testarConexao = testarConexao;
+window.cadastrarUsuario = cadastrarUsuario;
