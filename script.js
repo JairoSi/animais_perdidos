@@ -20,6 +20,44 @@ async function testarConexao() {
     }
 }
 
+// ✅ Função para cadastrar um animal no Supabase
+async function enviarParaSupabase(event) {
+    event.preventDefault();
+
+    let nome = document.getElementById("nome").value.trim();
+    let local = document.getElementById("local").value.trim();
+    let contato = document.getElementById("contato").value.trim();
+    let imagemInput = document.getElementById("imagem").files[0];
+
+    if (!nome || !local || !contato) {
+        alert("⚠️ Preencha todos os campos obrigatórios.");
+        return;
+    }
+
+    let imagemUrl = "https://placehold.co/150"; // Imagem padrão caso não seja enviada
+
+    if (imagemInput) {
+        imagemUrl = await uploadImagem(imagemInput);
+        if (!imagemUrl) {
+            alert("Erro ao enviar a imagem. Tente novamente.");
+            return;
+        }
+    }
+
+    let { data, error } = await supabase.from('animais_perdidos').insert([
+        { nome, local, contato, imagem_url: imagemUrl, encontrado: false, exibir: true }
+    ]);
+
+    if (!error) {
+        alert("✅ Animal cadastrado com sucesso!");
+        document.getElementById("cadastroForm").style.display = "none";
+        document.querySelector("#formAnimal").reset();
+    } else {
+        console.error("❌ Erro ao cadastrar no Supabase:", error);
+        alert("Erro ao cadastrar.");
+    }
+}
+
 // ✅ Função de conexão inicial
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🔍 DOM carregado, iniciando funções...");
