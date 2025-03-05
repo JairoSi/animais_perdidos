@@ -16,6 +16,31 @@ header {
     color: white;
     padding: 20px;
     text-align: center;
+    position: relative;
+}
+
+/* Posicionamento do Botão de Login no Topo */
+.login-container {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Estilização do Botão de Login */
+.botao-login {
+    background: #374151;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.botao-login:hover {
+    background: #222;
 }
 
 /* Container do Botão - Fundo Branco para Melhor Destaque */
@@ -99,7 +124,8 @@ header {
 }
 
 /* Campos de Entrada */
-.cadastro input {
+.cadastro input,
+.login input {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
@@ -125,14 +151,6 @@ header {
 .botao-enviar:hover {
     background: linear-gradient(45deg, #388E3C, #2E7D32);
 }
-
-/* Ajuste para telas menores */
-@media (max-width: 768px) {
-    .cadastro {
-        width: 90%;
-    }
-}
-
 
 /* Classe para mostrar o formulário */
 .cadastro:not(.oculto) {
@@ -193,8 +211,48 @@ header {
     background-color: #e6ffe6;
 }
 
+/* Formulário de Login */
+.login {
+    display: none;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+/* Cabeçalho do Login */
+.login-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Link "Esqueceu a Senha?" */
+#esqueci-senha {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: #007bff;
+    cursor: pointer;
+}
+
+#esqueci-senha:hover {
+    text-decoration: underline;
+}
+
 /* Ajuste para telas menores */
 @media (max-width: 768px) {
+    .cadastro, .login {
+        width: 90%;
+    }
+    
     .botao-cadastro-container {
         bottom: 10px;
         right: 10px;
