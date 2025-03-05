@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animais Perdidos</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script> <!-- Correção: Agora o script será carregado corretamente -->
+    <script src="script.js" defer></script> <!-- Agora o script será carregado corretamente -->
 </head>
 <body>
     <header>
         <h1>Animais Perdidos 🐾</h1>
+        
         <!-- Botão de Login no Canto Superior -->
         <div class="login-container">
             <button id="btn-login" class="botao-login">🔑 Login</button>
+            <button id="btn-abrir-cadastro" class="botao-cadastro">📝 Criar Conta</button>
         </div>
     </header>
 
@@ -35,6 +37,30 @@
         <p id="mensagem-login"></p>
     </section>
 
+    <!-- Formulário de Cadastro de Usuário -->
+    <section class="cadastro" id="cadastroUsuarioForm" style="display: none;">
+        <div class="cadastro-header">
+            <h2>Crie sua Conta</h2>
+            <button id="btn-fechar-cadastro" class="fechar-formulario">&times;</button>
+        </div>
+        <form id="formCadastro">
+            <label for="cadastro-nome">Nome:</label>
+            <input type="text" id="cadastro-nome" placeholder="Digite seu nome" required>
+
+            <label for="cadastro-email">E-mail:</label>
+            <input type="email" id="cadastro-email" placeholder="Digite seu e-mail" required>
+
+            <label for="cadastro-senha">Senha:</label>
+            <input type="password" id="cadastro-senha" placeholder="Crie uma senha" required>
+
+            <label for="cadastro-foto">Foto de Perfil:</label>
+            <input type="file" id="cadastro-foto" accept="image/*">
+
+            <button type="submit" class="botao-enviar">Cadastrar</button>
+        </form>
+        <p id="mensagem-cadastro"></p>
+    </section>
+
     <!-- Botão Flutuante Melhorado -->
     <div class="botao-cadastro-container">
         <button id="btn-cadastrar" class="botao-flutuante" title="Clique para cadastrar um animal perdido">
@@ -42,7 +68,7 @@
         </button>
     </div>
 
-    <!-- Formulário de Cadastro Melhorado -->
+    <!-- Formulário de Cadastro Melhorado para Animais -->
     <section class="cadastro" id="cadastroForm" style="display: none;">
         <div class="cadastro-header">
             <h2>Cadastrar um Animal Perdido</h2>
