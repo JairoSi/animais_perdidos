@@ -11,25 +11,38 @@ document.addEventListener("DOMContentLoaded", () => {
     testarConexao();
     carregarAnimais();
 
+    // Botões e formulários
     const botaoCadastrar = document.getElementById("btn-cadastrar");
     const formularioCadastro = document.getElementById("cadastroForm");
-    const botaoFechar = document.getElementById("btn-fechar"); // Novo botão de fechar
+    const botaoFecharCadastro = document.getElementById("btn-fechar");
+
+    const botaoLogin = document.getElementById("btn-login");
+    const formularioLogin = document.getElementById("loginForm");
+    const botaoFecharLogin = document.getElementById("btn-fechar-login");
 
     if (botaoCadastrar && formularioCadastro) {
         botaoCadastrar.addEventListener("click", () => {
-            console.log("🐶 Botão do doguinho clicado!");
             formularioCadastro.style.display = "block";
         });
 
-        botaoFechar.addEventListener("click", () => {
-            console.log("❌ Fechando formulário.");
+        botaoFecharCadastro.addEventListener("click", () => {
             formularioCadastro.style.display = "none";
         });
-    } else {
-        console.error("❌ Erro: Elementos do formulário não encontrados.");
+    }
+
+    if (botaoLogin && formularioLogin) {
+        botaoLogin.addEventListener("click", () => {
+            formularioLogin.style.display = "block";
+        });
+
+        botaoFecharLogin.addEventListener("click", () => {
+            formularioLogin.style.display = "none";
+        });
     }
 
     document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
+    document.querySelector("#formLogin").addEventListener("submit", loginUsuario);
+    document.querySelector("#esqueci-senha").addEventListener("click", recuperarSenha);
 });
 
 // ✅ Testar Conexão com o Supabase
@@ -47,7 +60,7 @@ async function carregarAnimais() {
     let { data: animais, error } = await supabase
         .from('animais_perdidos')
         .select('*')
-        .eq('exibir', true); // Exibe apenas registros com exibir = true
+        .eq('exibir', true);
 
     if (error) {
         console.error("❌ Erro ao buscar animais:", error);
@@ -152,5 +165,38 @@ async function marcarEncontrado(id) {
     }
 }
 
-// ✅ Tornar a função marcarEncontrado acessível globalmente
+// ✅ Função para autenticar usuário com e-mail e senha
+async function loginUsuario(event) {
+    event.preventDefault();
+
+    let email = document.getElementById("email").value.trim();
+    let senha = document.getElementById("senha").value.trim();
+
+    let { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+
+    if (error) {
+        alert("❌ Erro no login. Verifique seu e-mail e senha.");
+        console.error(error);
+    } else {
+        alert("✅ Login realizado com sucesso!");
+        document.getElementById("loginForm").style.display = "none";
+    }
+}
+
+// ✅ Função para redefinir a senha
+async function recuperarSenha() {
+    let email = prompt("Digite seu e-mail para redefinir a senha:");
+
+    if (email) {
+        let { error } = await supabase.auth.resetPasswordForEmail(email);
+
+        if (error) {
+            alert("❌ Erro ao solicitar redefinição de senha.");
+            console.error(error);
+        } else {
+            alert("📩 E-mail de recuperação enviado! Verifique sua caixa de entrada.");
+        }
+    }
+}
+
 window.marcarEncontrado = marcarEncontrado;
