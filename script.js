@@ -67,8 +67,24 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#esqueci-senha").addEventListener("click", recuperarSenha);
 });
 
+// ✅ Testar Conexão com o Supabase
+async function testarConexao() {
+    try {
+        const { data, error } = await supabase.from('usuarios').select('*');
+        if (error) {
+            console.error("❌ Erro ao conectar ao Supabase:", error);
+        } else {
+            console.log("✅ Conexão bem-sucedida! Dados obtidos:", data);
+        }
+    } catch (err) {
+        console.error("⚠️ Erro inesperado ao conectar ao Supabase:", err);
+    }
+}
+
 // ✅ Função para fazer upload da foto de perfil no Supabase Storage
 async function uploadFoto(file) {
+    if (!file) return null;
+
     const fileName = `usuarios/${Date.now()}_${file.name}`;
     const { data, error } = await supabase.storage.from('usuarios').upload(fileName, file);
 
@@ -105,16 +121,27 @@ async function cadastrarUsuario(event) {
         }
     }
 
-    let { data, error } = await supabase.from('usuarios').insert([
-        { nome, email, senha, foto_url: fotoUrl, role: "tutor", status: "pendente" }
+    let { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: senha
+    });
+
+    if (error) {
+        alert("❌ Erro ao cadastrar: " + error.message);
+        return;
+    }
+
+    // Após o cadastro bem-sucedido, salvar o usuário na tabela personalizada
+    let { data: userData, error: userError } = await supabase.from('usuarios').insert([
+        { id: data.user.id, nome, email, foto_url: fotoUrl, role: "tutor", status: "pendente" }
     ]);
 
-    if (!error) {
+    if (!userError) {
         alert("✅ Cadastro realizado com sucesso! Aguarde a aprovação de um administrador.");
         document.getElementById("cadastroUsuarioForm").style.display = "none";
         document.querySelector("#formCadastro").reset();
     } else {
-        console.error("❌ Erro ao cadastrar no Supabase:", error);
+        console.error("❌ Erro ao cadastrar no Supabase:", userError);
         alert("Erro ao cadastrar.");
     }
 }
@@ -128,7 +155,10 @@ async function loginUsuario(event) {
 
     console.log(`📩 Tentando login com e-mail: ${email}`);
 
-    let { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
+    let { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: senha
+    });
 
     if (error) {
         console.error("❌ Erro no login:", error);
