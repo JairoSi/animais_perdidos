@@ -16,7 +16,6 @@ header {
     color: white;
     padding: 20px;
     text-align: center;
-    position: relative;
 }
 
 /* Container do Botão - Fundo Branco para Melhor Destaque */
@@ -100,8 +99,7 @@ header {
 }
 
 /* Campos de Entrada */
-.cadastro input,
-.login input {
+.cadastro input {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
@@ -171,19 +169,14 @@ header {
     border-radius: 10px;
 }
 
-/* Cartão do Animal com Status Pendentes */
-.card.pendente {
-    border-left: 5px solid orange;
+.card h3 {
+    margin: 10px 0 5px;
+    font-size: 18px;
 }
 
-/* Cartão do Animal com Status Aprovado */
-.card.aprovado {
-    border-left: 5px solid green;
-}
-
-/* Cartão do Animal com Status Reprovado */
-.card.reprovado {
-    border-left: 5px solid red;
+.card p {
+    font-size: 14px;
+    color: #666;
 }
 
 /* Estilo para animais encontrados */
@@ -192,48 +185,12 @@ header {
     background-color: #e6ffe6;
 }
 
-/* Formulário de Login */
-.login {
-    display: none;
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-    width: 350px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-}
-
-/* Cabeçalho do Login */
-.login-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-/* Link "Esqueceu a Senha?" */
-#esqueci-senha {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    color: #007bff;
-    cursor: pointer;
-}
-
-#esqueci-senha:hover {
-    text-decoration: underline;
-}
-
 /* Ajuste para telas menores */
 @media (max-width: 768px) {
     .cadastro, .login {
         width: 90%;
     }
-    
+
     .botao-cadastro-container {
         bottom: 10px;
         right: 10px;
