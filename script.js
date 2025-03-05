@@ -58,6 +58,19 @@ async function enviarParaSupabase(event) {
     }
 }
 
+// ✅ Função para fazer upload de imagem para o Supabase
+async function uploadImagem(file) {
+    const fileName = `animais/${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage.from('animais').upload(fileName, file);
+
+    if (error) {
+        console.error("❌ Erro ao fazer upload da imagem:", error);
+        return null;
+    }
+
+    return `${SUPABASE_URL}/storage/v1/object/public/animais/${fileName}`;
+}
+
 // ✅ Função de conexão inicial
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🔍 DOM carregado, iniciando funções...");
@@ -117,3 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#formLogin").addEventListener("submit", loginUsuario);
     document.querySelector("#esqueci-senha").addEventListener("click", recuperarSenha);
 });
+
+// ✅ Expondo funções globalmente para evitar `ReferenceError`
+window.enviarParaSupabase = enviarParaSupabase;
+window.testarConexao = testarConexao;
