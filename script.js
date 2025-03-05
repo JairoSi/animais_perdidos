@@ -6,12 +6,13 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ✅ Garantir que os botões funcionam corretamente
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("🔍 DOM carregado, iniciando funções...");
+
     testarConexao();
     carregarAnimais();
 
-    // Botões e formulários
+    // Selecionando os botões e formulários
     const botaoCadastrar = document.getElementById("btn-cadastrar");
     const formularioCadastro = document.getElementById("cadastroForm");
     const botaoFecharCadastro = document.getElementById("btn-fechar");
@@ -20,26 +21,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const formularioLogin = document.getElementById("loginForm");
     const botaoFecharLogin = document.getElementById("btn-fechar-login");
 
+    console.log("🔍 Botão de login encontrado:", botaoLogin);
+    console.log("🔍 Formulário de login encontrado:", formularioLogin);
+
     if (botaoCadastrar && formularioCadastro) {
         botaoCadastrar.addEventListener("click", () => {
+            console.log("🐶 Botão de cadastro clicado!");
             formularioCadastro.style.display = "block";
         });
 
         botaoFecharCadastro.addEventListener("click", () => {
+            console.log("❌ Fechando formulário de cadastro.");
             formularioCadastro.style.display = "none";
         });
     }
 
     if (botaoLogin && formularioLogin) {
         botaoLogin.addEventListener("click", () => {
+            console.log("🔑 Botão de login clicado!");
             formularioLogin.style.display = "block";
         });
 
         botaoFecharLogin.addEventListener("click", () => {
+            console.log("❌ Fechando formulário de login.");
             formularioLogin.style.display = "none";
         });
     }
 
+    // Garantir que os eventos estão sendo registrados
     document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
     document.querySelector("#formLogin").addEventListener("submit", loginUsuario);
     document.querySelector("#esqueci-senha").addEventListener("click", recuperarSenha);
@@ -47,20 +56,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ✅ Testar Conexão com o Supabase
 async function testarConexao() {
-    const { data, error } = await supabase.from('animais_perdidos').select('*');
-    if (error) {
-        console.error("❌ Erro ao conectar ao Supabase:", error);
-    } else {
-        console.log("✅ Conexão bem-sucedida! Dados obtidos:", data);
+    try {
+        const { data, error } = await supabase.from('animais_perdidos').select('*');
+        if (error) {
+            console.error("❌ Erro ao conectar ao Supabase:", error);
+        } else {
+            console.log("✅ Conexão bem-sucedida! Dados obtidos:", data);
+        }
+    } catch (err) {
+        console.error("⚠️ Erro inesperado ao conectar ao Supabase:", err);
     }
 }
 
-// ✅ Função para carregar apenas os animais com `exibir = true`
+// ✅ Função para carregar animais
 async function carregarAnimais() {
-    let { data: animais, error } = await supabase
-        .from('animais_perdidos')
-        .select('*')
-        .eq('exibir', true);
+    let { data: animais, error } = await supabase.from('animais_perdidos').select('*').eq('exibir', true);
 
     if (error) {
         console.error("❌ Erro ao buscar animais:", error);
@@ -98,86 +108,22 @@ async function carregarAnimais() {
     });
 }
 
-// ✅ Função para fazer upload da imagem no Supabase
-async function uploadImagem(file) {
-    const fileName = `animais_perdidos/${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage.from('animais').upload(fileName, file);
-
-    if (error) {
-        console.error("❌ Erro ao fazer upload da imagem:", error);
-        alert("Erro ao enviar a imagem.");
-        return null;
-    }
-
-    return `${SUPABASE_URL}/storage/v1/object/public/animais/${fileName}`;
-}
-
-// ✅ Função para cadastrar um novo animal no Supabase
-async function enviarParaSupabase(event) {
-    event.preventDefault();
-
-    let nome = document.querySelector("#nome").value.trim();
-    let local = document.querySelector("#local").value.trim();
-    let contato = document.querySelector("#contato").value.trim();
-    let imagemInput = document.querySelector("#imagem").files[0];
-
-    if (!nome || !local || !contato) {
-        alert("⚠️ Preencha todos os campos obrigatórios.");
-        return;
-    }
-
-    let imagemUrl = "https://placehold.co/150"; // Imagem padrão caso não seja enviada
-
-    if (imagemInput) {
-        imagemUrl = await uploadImagem(imagemInput);
-        if (!imagemUrl) {
-            alert("Erro ao enviar a imagem. Tente novamente.");
-            return;
-        }
-    }
-
-    let { data, error } = await supabase.from('animais_perdidos').insert([
-        { nome, local, contato, imagem_url: imagemUrl, encontrado: false, exibir: true }
-    ]);
-
-    if (!error) {
-        alert("✅ Animal cadastrado com sucesso!");
-        document.getElementById("cadastroForm").style.display = "none";
-        document.querySelector("#formAnimal").reset();
-        carregarAnimais();
-    } else {
-        console.error("❌ Erro ao cadastrar no Supabase:", error);
-        alert("Erro ao cadastrar.");
-    }
-}
-
-// ✅ Função para marcar animal como encontrado
-async function marcarEncontrado(id) {
-    let { error } = await supabase.from('animais_perdidos').update({ encontrado: true }).match({ id });
-
-    if (error) {
-        console.error("❌ Erro ao marcar como encontrado:", error);
-        alert("Erro ao marcar como encontrado.");
-    } else {
-        console.log(`✅ Animal com ID ${id} foi marcado como encontrado!`);
-        alert("Animal marcado como encontrado!");
-        carregarAnimais();
-    }
-}
-
-// ✅ Função para autenticar usuário com e-mail e senha
+// ✅ Função para autenticar usuário
 async function loginUsuario(event) {
     event.preventDefault();
 
     let email = document.getElementById("email").value.trim();
     let senha = document.getElementById("senha").value.trim();
 
-    let { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+    console.log(`📩 Tentando login com e-mail: ${email}`);
+
+    let { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
 
     if (error) {
-        alert("❌ Erro no login. Verifique seu e-mail e senha.");
-        console.error(error);
+        console.error("❌ Erro no login:", error);
+        alert(`❌ Erro no login: ${error.message}`);
     } else {
+        console.log("✅ Login realizado com sucesso!", data);
         alert("✅ Login realizado com sucesso!");
         document.getElementById("loginForm").style.display = "none";
     }
@@ -199,4 +145,16 @@ async function recuperarSenha() {
     }
 }
 
-window.marcarEncontrado = marcarEncontrado;
+// ✅ Tornar a função marcarEncontrado acessível globalmente
+window.marcarEncontrado = async function (id) {
+    let { error } = await supabase.from('animais_perdidos').update({ encontrado: true }).match({ id });
+
+    if (error) {
+        console.error("❌ Erro ao marcar como encontrado:", error);
+        alert("Erro ao marcar como encontrado.");
+    } else {
+        console.log(`✅ Animal com ID ${id} foi marcado como encontrado!`);
+        alert("Animal marcado como encontrado!");
+        carregarAnimais();
+    }
+};
