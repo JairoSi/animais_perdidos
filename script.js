@@ -52,13 +52,14 @@ async function enviarParaSupabase(event) {
         alert("✅ Animal cadastrado com sucesso!");
         document.getElementById("cadastroForm").style.display = "none";
         document.querySelector("#formAnimal").reset();
+        carregarAnimais(); // Recarregar lista de animais após o cadastro
     } else {
         console.error("❌ Erro ao cadastrar no Supabase:", error);
         alert("Erro ao cadastrar.");
     }
 }
 
-// ✅ Função para fazer upload de imagem no Supabase
+// ✅ Função para fazer upload de imagem para o Supabase
 async function uploadImagem(file) {
     const fileName = `animais_perdidos/${Date.now()}_${file.name}`;
     const { data, error } = await supabase.storage.from('animais').upload(fileName, file);
@@ -69,6 +70,60 @@ async function uploadImagem(file) {
     }
 
     return `${SUPABASE_URL}/storage/v1/object/public/animais/${fileName}`;
+}
+
+// ✅ Função para carregar animais
+async function carregarAnimais() {
+    let { data: animais, error } = await supabase.from('animais_perdidos').select('*').eq('exibir', true);
+
+    if (error) {
+        console.error("❌ Erro ao buscar animais:", error);
+        return;
+    }
+
+    let listaPerdidos = document.querySelector("#listaPerdidos");
+    let listaEncontrados = document.querySelector("#listaEncontrados");
+
+    listaPerdidos.innerHTML = "";
+    listaEncontrados.innerHTML = "";
+
+    animais.forEach(animal => {
+        let div = document.createElement("div");
+        div.classList.add("card");
+
+        if (animal.encontrado) {
+            div.classList.add("encontrado");
+            listaEncontrados.appendChild(div);
+        } else {
+            listaPerdidos.appendChild(div);
+        }
+
+        div.innerHTML = `
+            <img src="${animal.imagem_url || 'https://placehold.co/150'}" alt="${animal.nome}">
+            <h3>${animal.nome}</h3>
+            <p><strong>Local:</strong> ${animal.local}</p>
+            <p><strong>Contato:</strong> ${animal.contato}</p>
+            <button class="btn-encontrado" data-id="${animal.id}">✔ Marcar como Encontrado</button>
+        `;
+
+        div.querySelector(".btn-encontrado").addEventListener("click", function () {
+            marcarEncontrado(this.dataset.id);
+        });
+    });
+}
+
+// ✅ Função para marcar um animal como encontrado
+async function marcarEncontrado(id) {
+    let { error } = await supabase.from('animais_perdidos').update({ encontrado: true }).match({ id });
+
+    if (error) {
+        console.error("❌ Erro ao marcar como encontrado:", error);
+        alert("Erro ao marcar como encontrado.");
+    } else {
+        console.log(`✅ Animal com ID ${id} foi marcado como encontrado!`);
+        alert("Animal marcado como encontrado!");
+        carregarAnimais(); // Recarregar lista de animais após a alteração
+    }
 }
 
 // ✅ Função de conexão inicial
@@ -96,4 +151,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Garantir que os eventos estão sendo registrados corretamente
     document.querySelector("#formAnimal").addEventListener("submit", enviarParaSupabase);
+    carregarAnimais(); // Carregar animais ao iniciar a página
 });
